@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+    <h1>Search Results for "{{ query }}"</h1>
+    {% if results %}
+        <div id="post">
+            {% for post in results %}
+                <div class="card border-dark">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <a>@{{ post.user.username }}</a>
+                        {% if user.id == post.author %}
+                            <a href="/delete-post/{{post.id}}" class="btn btn-danger btn-sm">delete</a>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <div class="card-text">Department:</div>
+                        <div class="card-text card border-medium">&nbsp; {{ post.department }}</div>
+                        <br>
+                        <div class="card-text">Course Code:</div>
+                        <div class="card-text card border-medium">&nbsp; {{ post.course_code }}</div>
+                        <br>
+                        <div class="card-text">Professor:</div>
+                        <div class="card-text card border-medium">&nbsp; {{ post.professor }}</div>
+                        <br>
+                        <div class="card-text">Note:</div>
+                        <div class="card-text card border-medium">&nbsp; {{ post.post }}</div>
+                        <br>
+                        <div class="collapse" id="comments-{{post.id}}">
+                            <div class="card">
+                                <div class="card-body" id="comments-expanded-{{post.id}}">
+                                    {% for comment in post.comments %}
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                @{{ comment.user.username }}: {{ comment.comment }}
+                                            </div>
+                                            <div>
+                                                <small class="text-muted"> {{comment.date}} </small>
+                                                {% if user.id == comment.author or user.id == post.author %}
+                                                    <a href="/delete-comment/{{comment.id}}" class="btn btn-danger btn-sm">delete</a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <br />
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        <p class="card-text">
+                            {% if post.comments|length > 0 %}
+                                <a data-toggle="collapse" href="#comments-{{post.id}}" role="button">
+                                    <small>View {{post.comments|length}} Comments</small>
+                                </a>
+                            {% else %}
+                                <small class="text-muted">No Comments</small>
+                            {% endif %}
+                        </p>
+                        <form class="input-group mb-3" method='POST' action="/comment/{{post.id}}">
+                            <input type="text" id="text" name="comment" class="form-control" placeholder="Say something!" />
+                            <button type="submit" class="btn btn-primary">Comment</button>
+                        </form>
+                    </div>
+                    <div class="card-footer text-muted">
+                        {{ post.date }}
+                    </div>
+                </div>
+                <br />
+                <br />
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No results found for "{{ query }}".</p>
+    {% endif %}
+{% endblock %}
