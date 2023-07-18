@@ -34,13 +34,38 @@ def feed():
             db.session.commit()
             flash('Post created!', category='success')
             return redirect(url_for('views.feed'))
-    query = request.args.get('query')
-    if query:
-        posts = Post.query.filter(Post.post.contains(query)).all()
-    else:
-        posts = Post.query.all()
-
     return render_template('feed.html', user=current_user, posts=posts)
+
+@views.route("/edit-post/<id>", methods=['GET','POST'])
+@login_required
+def edit_post(id):
+    post = Post.query.filter_by(id=id).first()
+
+    if not post:
+            flash('Post does not exist.', category='error')
+    elif current_user.id != post.author:
+        flash('You do not have permission to edit this Post.', category='error')
+    else: 
+        if request.method == "POST":
+            post.department = request.form['department']
+            post.course_code = request.form['course_code']
+            post.professor = request.form['professor']
+            post.post = request.form['post']
+            if not post.department:
+                flash('Department cannot be empty', category='error')
+            elif not post.course_code:
+                flash('Course Code cannot be empty', category='error')
+            elif not post.professor:
+                flash('Professor cannot be empty', category='error')
+            elif not post.post:
+                flash('Post cannot be empty', category='error')
+            else:
+                post = Post(department=post.department,course_code=post.course_code, professor=post.professor, post=post.post)
+                db.session.commit()
+                flash('Post edited!', category='success')
+                return redirect(url_for('views.feed'))
+
+    return render_template("edit_post.html", user=current_user, post=post)
 
 @views.route("/delete-post/<id>")
 @login_required
@@ -84,6 +109,28 @@ def comment(post_id):
             flash('Post does not exist.', category='error')
     
     return redirect(url_for('views.feed'))
+
+@views.route("/edit-comment/<post_id>/<comment_id>", methods=['GET','POST'])
+@login_required
+def edit_comment(post_id, comment_id):
+    comment = Comment.query.filter_by(post_id=post_id,id=comment_id).first()
+
+    if not comment:
+            flash('Comment does not exist.', category='error')
+    elif current_user.id != comment.author:
+        flash('You do not have permission to edit this Comment.', category='error')
+    else: 
+        if request.method == "POST":
+            comment.comment = request.form['comment']
+            if not comment.comment:
+                flash('Comment cannot be empty', category='error')
+            else:
+                comment = Comment(comment=comment.comment)
+                db.session.commit()
+                flash('Comment edited!', category='success')
+                return redirect(url_for('views.feed'))
+    
+    return render_template("edit_comment.html", user=current_user, comment=comment)
 
 @views.route("/delete-comment/<comment_id>")
 @login_required

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Edit Comment{% endblock %}
+
+{% block content %}
+<h1 align="center">Edit Comment</h1>
+
+<div class="card-body card border-dark">
+<form method="POST">
+    <input type="text" id="text" name="comment" class="form-control" value="{{ comment.comment }}" />
+    <br />
+    <div align="center">
+    <button type="submit" class="btn btn-primary btn-block">Edit Comment</button>
+    </div>
+  </form>
+</div>
+
+<br>
+<div>
+<a href="/feed" class="btn btn-secondary btn-sm">Go back to feed</a>
+</div>
+
+{% endblock %}

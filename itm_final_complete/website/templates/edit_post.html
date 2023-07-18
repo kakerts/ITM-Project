@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Edit Post{% endblock %}
+
+{% block content %}
+<h1 align="center">Edit Post</h1>
+
+<div class="card-body card border-dark">
+<form method="POST">
+  <input type="text" id="text" name="department" class="form-control" placeholder="Department" value="{{ post.department }}" />
+  <br />
+  <input type="text" id="text" name="course_code" class="form-control" placeholder="Course Code" value="{{ post.course_code }}" />
+  <br />
+  <input type="text" id="text" name="professor" class="form-control" placeholder="Professor (LASTNAME, Firstname)" value="{{ post.professor }}" />
+  <br />
+  <input name="post" id="text" class="form-control" placeholder="Post" value="{{ post.post }}" ></input>
+  <br />
+    <div align="center">
+      <button type="submit" class="btn btn-lg btn-primary btn-block">Edit Thread</button>
+    </div>
+  </form>
+  </div>
+  
+  <br>
+  <div>
+  <a href="/feed" class="btn btn-secondary btn-sm">Go back to feed</a>
+  </div>
+
+  {% endblock %}
